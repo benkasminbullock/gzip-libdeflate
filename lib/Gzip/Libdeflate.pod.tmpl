@@ -27,11 +27,16 @@ This method was added in version [% version %] of the module.
 
 This documents version [% info.version %] of [% info.name %]
 corresponding to L<git commit [% commit.commit %]|[% info.repo
-%]/commit/[% commit.commit %]> released on [% commit.date %].
+%]/commit/[% commit.commit %]> released on [% commit.date %]. This
+distribution also includes libdeflate version [% libdeflate_version
+%]. 
 
 =head1 DESCRIPTION
 
-Interface to libdeflate.
+Interface to libdeflate. libdeflate offers the same forms of
+compression as zlib, as used in gzip, libpng and similar
+utilities. This distribution includes libdeflate within itself, so it
+is not necessary to have that on your system.
 
 =head1 METHODS
 
@@ -70,7 +75,7 @@ Not implemented in this release.
 
 =head3 gzip_decompress
 
-    my $thing = $gl->zlib_decompress ($gzthing);
+    my $thing = $gl->gzip_decompress ($gzthing);
 
 =head3 zlib_compress
 
@@ -78,10 +83,22 @@ Not implemented in this release.
 
 =head1 SEE ALSO
 
+=head2 About libdeflate
+
+L<https://github.com/ebiggers/libdeflate>
+
+=head2 CPAN modules
+
 =over
 
-=item L<Alien::Libdeflate>
+=item L<Alien::libdeflate>
 
 =back
 
 [% INCLUDE "author" %]
+
+Libdeflate is copyright Eric Biggers and is used under the following
+licence.
+
+[% INCLUDE "biggers" %]
+

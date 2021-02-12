@@ -32,6 +32,8 @@ my $output = "$Bin/lib/Gzip/$pod";
 my %vars = (
     info => $info,
     commit => $commit,
+    # Get this from a config file
+    libdeflate_version => '1.7',
 );
 
 my $tt = Template->new (

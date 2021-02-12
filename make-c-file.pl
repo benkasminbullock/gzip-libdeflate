@@ -50,6 +50,10 @@ for my $file (@hfiles) {
 }
 
 my $c = '';
+
+my $copyright = read_text ("$Bin/biggers");
+$c .= "/*\n$copyright\n*/\n";
+
 for my $cfile (@cfiles) {
     if (-d $cfile) {
 	next;
