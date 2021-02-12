@@ -31,15 +31,57 @@ corresponding to L<git commit [% commit.commit %]|[% info.repo
 
 =head1 DESCRIPTION
 
-Interface to libdeflate
+Interface to libdeflate.
 
 =head1 METHODS
 
 =head2 Creators
 
+=head3 compressor
+
+    my $co = Gzip::Libdeflate->compressor ();
+
+Accepts an optional number argument of compression level (1-12).  The
+default is 6.
+
+=head3 decompressor
+
+    my $de = Gzip::Libdeflate->decompressor ();
+
 =head2 Compressors
+
+=head3 deflate_compress
+
+    my $dthing = $gl->gzip_compress ($thing);
+
+=head3 gzip_compress
+
+    my $gzthing = $gl->gzip_compress ($thing);
+
+=head3 zlib_compress
+
+    my $zthing = $gl->zlib_compress ($thing);
 
 =head2 Decompressors
 
+=head3 deflate_decompress
+
+Not implemented in this release.
+
+=head3 gzip_decompress
+
+    my $thing = $gl->zlib_decompress ($gzthing);
+
+=head3 zlib_compress
+
+Not implemented in this release.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<Alien::Libdeflate>
+
+=back
 
 [% INCLUDE "author" %]
