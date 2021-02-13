@@ -14215,7 +14215,7 @@ struct libdeflate_decompressor {
 
 
 
-typedef machine_word_t bitbuf_t;
+/* typedef machine_word_t bitbuf_t; */
 
 
 #define DECOMPRESS_BITBUF_NBITS	(8 * sizeof(bitbuf_t) - 1)

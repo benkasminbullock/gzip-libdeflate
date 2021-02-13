@@ -54,11 +54,16 @@ my $c = '';
 my $copyright = read_text ("$Bin/biggers");
 $c .= "/*\n$copyright\n*/\n";
 
+my $saw_bitbuf_t;
+
 for my $cfile (@cfiles) {
     if (-d $cfile) {
 	next;
     }
     my $text = read_text ($cfile);
+
+    $text =~ s!$comment_re!!g;
+
     if ($cfile =~ m!(arm|x86)!) {
 	my $type = $1;
      	$text =~ s!#\s*include\s*"(.*?)"!#include "$type-$1"!g;
@@ -72,7 +77,16 @@ for my $cfile (@cfiles) {
 	my $what = uc $1;
 	$text =~ s!(BITBUF_NBITS)!${what}_$1!g;
     }
-    $text =~ s!$comment_re!!g;
+
+    # http://www.cpantesters.org/cpan/report/648fc304-6d58-11eb-8344-d38a1f24ea8f
+    # http://www.cpantesters.org/cpan/report/6ff92c12-6d58-11eb-8344-d38a1f24ea8f
+    # http://www.cpantesters.org/cpan/report/6e732488-6d58-11eb-8344-d38a1f24ea8f
+    if ($text =~ m!(typedef.*bitbuf_t;)!) {
+	if ($saw_bitbuf_t) {
+	    $text =~ s!(typedef.*bitbuf_t;)!/* $1 */!g;
+	}
+	$saw_bitbuf_t = 1;
+    }
     $c .= "/* $cfile */\n";
     $c .= $text;
 }
