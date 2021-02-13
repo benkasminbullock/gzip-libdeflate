@@ -40,52 +40,72 @@ is not necessary to have that on your system.
 
 =head1 METHODS
 
-=head2 Creators
+=head2 compressor
 
-=head3 compressor
+    my $co = Gzip::Libdeflate->compressor (%options);
 
-    my $co = Gzip::Libdeflate->compressor ();
+=over
 
-Accepts an optional number argument of compression level (1-12).  The
-default is 6.
+=item level
 
-=head3 decompressor
+    my $co = Gzip::Libdeflate->compressor (level => 9);
 
-    my $de = Gzip::Libdeflate->decompressor ();
+An optional number argument of compression level from 1 (fast and poor
+compression) to 12 (slow and good compression).  If you do not specify
+it, the default is 6. These correspond to the compression levels of
+zlib, but with extra compression levels 10-12 also added. See L</About
+libdeflate> for details.
 
-=head2 Compressors
+=item type
 
-=head3 deflate_compress
+    my $co = Gzip::Libdeflate->compressor (type => 'deflate');
 
-    my $dthing = $gl->gzip_compress ($thing);
+Change the type of compression. The default is type C<gzip> but you
+can also choose C<deflate> and C<zlib>. These are all the same thing
+up to headers.
 
-=head3 gzip_compress
+=back
 
-    my $gzthing = $gl->gzip_compress ($thing);
+=head2 decompressor
 
-=head3 zlib_compress
+    my $de = Gzip::Libdeflate->decompressor (%options);
 
-    my $zthing = $gl->zlib_compress ($thing);
+=over 
 
-=head2 Decompressors
+=item type
 
-=head3 deflate_decompress
+Either C<deflate>, C<zlib>, or C<gzip> (the default). See
+L</compressor> for details.
 
-Not implemented in this release.
+=back
 
-=head3 gzip_decompress
+=head2 compress
 
-    my $thing = $gl->gzip_decompress ($gzthing);
+    my $comp_thing = $gl->compress ($thing);
 
-=head3 zlib_compress
+Compress input C<$thing> using whatever compression level and type you
+have specified for C<$gl> in L</compressor>.
 
-Not implemented in this release.
+=head2 decompress
+
+    my $thing = $gl->decompress ($dthing);
+
+Decompress c<$comp_thing> into C<$thing>. If you have chosen the
+C<zlib> or C<deflate> options in L</decompressor>, you also need to
+specify the expected size of C<$thing>.
+
+    my $thing = $gl->decompress ($dthing, 1000);
+
+In the C<gzip> format, the size is stored within the data itself so it
+doesn't need to be specified.
 
 =head1 SEE ALSO
 
 =head2 About libdeflate
 
-L<https://github.com/ebiggers/libdeflate>
+Libdeflate is an updated version of C<zlib>. See the L<Libdeflate
+github repository|https://github.com/ebiggers/libdeflate> for
+information.
 
 =head2 CPAN modules
 
@@ -97,8 +117,7 @@ L<https://github.com/ebiggers/libdeflate>
 
 [% INCLUDE "author" %]
 
-Libdeflate is copyright Eric Biggers and is used under the following
-licence.
+Libdeflate's copyright and licence are as follows.
 
 [% INCLUDE "biggers" %]
 

@@ -32,5 +32,5 @@ WriteMakefile (
     },
     MIN_PERL_VERSION => '5.006001',
     OBJECT => 'Libdeflate.o',
-#    OPTIMIZE => '-g -Wall',
+    #    OPTIMIZE => '-g -Wall',
 );

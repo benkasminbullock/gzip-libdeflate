@@ -19,83 +19,64 @@ MODULE=Gzip::Libdeflate PACKAGE=Gzip::Libdeflate
 PROTOTYPES: DISABLE
 
 Gzip::Libdeflate
-compressor (class, level = 6)
+compressor (class, ...)
 	const char * class;
-	int level;
+PREINIT:
+	gzip_libdeflate_t * gl;
 CODE:
-	Newxz (RETVAL, 1, gzip_libdeflate_t);
-	RETVAL->c = libdeflate_alloc_compressor(level);
+	Newxz (gl, 1, gzip_libdeflate_t);
+	GLSET;
+	gl_init (gl, libdeflate_compressor);
+	MSG ("%p", gl->c);
+	RETVAL = gl;
 OUTPUT:
 	RETVAL
 
 Gzip::Libdeflate
-decompressor (class)
+decompressor (class, ...)
 	const char * class;
+PREINIT:
+	gzip_libdeflate_t * gl;
 CODE:
-	Newxz (RETVAL, 1, gzip_libdeflate_t);
-	RETVAL->d = libdeflate_alloc_decompressor ();
+	Newxz (gl, 1, gzip_libdeflate_t);
+	GLSET;
+	gl_init (gl, libdeflate_decompressor);
+	RETVAL = gl;
 OUTPUT:
 	RETVAL
 
 SV *
-deflate_compress (gl, in)
+compress (gl, in)
 	Gzip::Libdeflate gl;
 	SV * in;
 CODE:
-	RETVAL = gzip_libdeflate_deflate_compress (gl, in);
+	RETVAL = gzip_libdeflate_compress (gl, in);
 OUTPUT:
 	RETVAL
 
 SV *
-zlib_compress (gl, in)
+decompress (gl, in, size = 0)
 	Gzip::Libdeflate gl;
 	SV * in;
+	SV * size;
 CODE:
-	RETVAL = gzip_libdeflate_zlib_compress (gl, in);
-OUTPUT:
-	RETVAL
-
-SV *
-gzip_compress (gl, in)
-	Gzip::Libdeflate gl;
-	SV * in;
-CODE:
-	RETVAL = gzip_libdeflate_gzip_compress (gl, in);
-OUTPUT:
-	RETVAL
-
-SV *
-deflate_decompress (gl, in)
-	Gzip::Libdeflate gl;
-	SV * in;
-CODE:
-	RETVAL = gzip_libdeflate_deflate_decompress (gl, in);
-OUTPUT:
-	RETVAL
-
-SV *
-zlib_decompress (gl, in)
-	Gzip::Libdeflate gl;
-	SV * in;
-CODE:
-	RETVAL = gzip_libdeflate_zlib_decompress (gl, in);
-OUTPUT:
-	RETVAL
-
-SV *
-gzip_decompress (gl, in)
-	Gzip::Libdeflate gl;
-	SV * in;
-CODE:
-	RETVAL = gzip_libdeflate_gzip_decompress (gl, in);
+	RETVAL = gzip_libdeflate_decompress (gl, in, size);
 OUTPUT:
 	RETVAL
 
 
 void
+verbose (gl, onoff)
+	Gzip::Libdeflate gl;
+	SV * onoff;
+CODE:
+	gl->verbose = !! SvTRUE (onoff);
+
+void
 DESTROY (gl)
 	Gzip::Libdeflate gl;
 CODE:
+	MSG ("Freeing");
 	if (gl->c) {
 		libdeflate_free_compressor (gl->c);
 		gl->c = 0;
@@ -104,3 +85,5 @@ CODE:
 		libdeflate_free_decompressor (gl->d);
 		gl->d = 0;
 	}
+	gl->o = libdeflate_uninitialized;
+
