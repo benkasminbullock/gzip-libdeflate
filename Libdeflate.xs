@@ -19,28 +19,14 @@ MODULE=Gzip::Libdeflate PACKAGE=Gzip::Libdeflate
 PROTOTYPES: DISABLE
 
 Gzip::Libdeflate
-compressor (class, ...)
+new (class, ...)
 	const char * class;
 PREINIT:
 	gzip_libdeflate_t * gl;
 CODE:
 	Newxz (gl, 1, gzip_libdeflate_t);
+	gl_init (gl);
 	GLSET;
-	gl_init (gl, libdeflate_compressor);
-	MSG ("%p", gl->c);
-	RETVAL = gl;
-OUTPUT:
-	RETVAL
-
-Gzip::Libdeflate
-decompressor (class, ...)
-	const char * class;
-PREINIT:
-	gzip_libdeflate_t * gl;
-CODE:
-	Newxz (gl, 1, gzip_libdeflate_t);
-	GLSET;
-	gl_init (gl, libdeflate_decompressor);
 	RETVAL = gl;
 OUTPUT:
 	RETVAL
@@ -85,5 +71,4 @@ CODE:
 		libdeflate_free_decompressor (gl->d);
 		gl->d = 0;
 	}
-	gl->o = libdeflate_uninitialized;
 

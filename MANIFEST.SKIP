@@ -1,5 +1,5 @@
 # Exclude the author-only build scripts
-(build|make-pod|clean|make-c-file|versionup)\.pl
+^(build|make-pod|clean|make-c-file|versionup)\.pl$
 # Exclude the built module
 blib/.*
 # Exclude all git files
@@ -23,4 +23,7 @@ MYMETA..*
 ^examples/.*-out\.txt$
 # Author tests
 ^xt/.*.t$
+# Produced by XS
 ^Libdeflate.(?:c|o|bs)$
+# Copyright notice
+^libd-copyr$

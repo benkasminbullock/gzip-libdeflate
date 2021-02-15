@@ -6,23 +6,15 @@ typedef enum {
 }
 gzip_libdeflate_type_t;
 
-typedef enum {
-    libdeflate_uninitialized = 0,
-    libdeflate_compressor = 1,
-    libdeflate_decompressor = 2,
-}
-gzip_libdeflate_object_t;
-
 typedef struct {
+    /* Type (gzip, zlib, deflate) */
     gzip_libdeflate_type_t t;
-    gzip_libdeflate_object_t o;
     /* Compressor's level. */
     int level;
     struct libdeflate_compressor * c;
     struct libdeflate_decompressor * d;
     /* Debugging flag */
     unsigned int verbose : 1;
-    unsigned int init_ok : 1;
 }
 gzip_libdeflate_t;
 
@@ -113,37 +105,20 @@ gl_set (gzip_libdeflate_t * gl, SV * key_sv, SV * value_sv)
 }
 
 static void
-gl_init (gzip_libdeflate_t * gl, gzip_libdeflate_object_t o)
+gl_init (gzip_libdeflate_t * gl)
 {
-    gl->o = o;
     if (gl->t == 0) {
 	/* Default to gzip */
 	gl_set_type (gl, libdeflate_gzip);
     }
-    switch (gl->o) {
-    case libdeflate_compressor:
-	/* The user did not specify a level in the creator. gl is
-	   initialized with Newxz so level is zero initially. */
-	if (gl->level == 0) {
-	    /* 6 is the default in libdeflate, libdeflate doesn't provide
-	       a macro so we have to use the magic number here. */
-	    gl_set_level (gl, 6);
-	}
-	MSG ("Setting compression to level %d", gl->level);
-	gl->c = libdeflate_alloc_compressor (gl->level);
-	MSG ("Got %p", gl->c);
-	gl->d = 0;
-	break;
-    case libdeflate_decompressor:
-	gl->c = 0;
-	gl->d = libdeflate_alloc_decompressor ();
-	break;
-    default:
-	warn ("Unknown type of object %d", o);
-	gl->c = 0;
-	gl->d = 0;
-	break;
+    /* The user did not specify a level in the creator. gl is
+       initialized with Newxz so level is zero initially. */
+    if (gl->level == 0) {
+	/* 6 is the default in libdeflate, libdeflate doesn't provide
+	   a macro so we have to use the magic number here. */
+	gl_set_level (gl, 6);
     }
+    MSG ("Setting compression to level %d", gl->level);
 }
 
 static SV *
@@ -168,9 +143,12 @@ gzip_libdeflate_compress (gzip_libdeflate_t * gl, SV * in_sv)
     SV * out;
     char * out_p;
 
-    if (gl->o != libdeflate_compressor) {
-	warn ("This is a decompressor, cannot compress");
-	return &PL_sv_undef;
+    if (! gl->c) {
+	gl->c = libdeflate_alloc_compressor (gl->level);
+	if (! gl->c) {
+	    warn ("Could not allocate a compressor");
+	    return &PL_sv_undef;
+	}
     }
 
     in = SvPV (in_sv, in_len);
@@ -237,10 +215,14 @@ gzip_libdeflate_decompress (gzip_libdeflate_t * gl, SV * in_sv, SV * size)
     SV * out;
     char * out_p;
 
-    if (gl->o != libdeflate_decompressor) {
-	warn ("This is a compressor, cannot decompress");
-	return &PL_sv_undef;
+    if (! gl->d) {
+	gl->d = libdeflate_alloc_decompressor ();
+	if (! gl->d) {
+	    warn ("Could not allocate a decompressor");
+	    return &PL_sv_undef;
+	}
     }
+
     in = SvPV (in_sv, in_len);
 
     switch (gl->t) {

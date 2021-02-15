@@ -14,14 +14,23 @@ binmode STDERR, ":encoding(utf8)";
 use FindBin '$Bin';
 
 use Gzip::Libdeflate;
-my $c = Gzip::Libdeflate->compressor (verbose => 1);
-my $in = "monkey business! " x 100;
-my $out = $c->compress ($in);
-cmp_ok (length ($out), '<', length ($in), "Compressed");
-my $d = Gzip::Libdeflate->decompressor (verbose => 1);
-my $rt = $d->decompress ($out);
-is ($rt, $in, "Round trip");
 
+for my $type (qw!gzip deflate zlib!) {
+    for my $level (1..12) {
+	my $c = Gzip::Libdeflate->new (type => $type, level => $level);
+	my $in = "monkey business! " x 100;
+	# Be careful since this uses length & that is not the number of
+	# bytes if $in is a character string.
+	my $size = length ($in);
+	my $out = $c->compress ($in);
+	cmp_ok (length ($out), '<', length ($in), "Compressed $type $level");
+	my $rt = $c->decompress ($out, $size);
+	is ($rt, $in, "Round trip $type $level");
+    }
+}
+
+# Use default gzip type
+my $d = Gzip::Libdeflate->new ();
 open my $gzin, "<:raw", "$Bin/index.html.gz" or die $!;
 my $guff = '';
 while (<$gzin>) {

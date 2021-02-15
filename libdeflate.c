@@ -14181,7 +14181,7 @@ libdeflate_set_memory_allocator(void *(*malloc_func)(size_t),
 #define OFFSET_ENOUGH		402	
 
 
-typedef u8 len_t;
+typedef u8 libdeflate_len_t;
 
 
 struct libdeflate_decompressor {
@@ -14189,10 +14189,10 @@ struct libdeflate_decompressor {
 	
 
 	union {
-		len_t precode_lens[DEFLATE_NUM_PRECODE_SYMS];
+		libdeflate_len_t precode_lens[DEFLATE_NUM_PRECODE_SYMS];
 
 		struct {
-			len_t lens[DEFLATE_NUM_LITLEN_SYMS +
+			libdeflate_len_t lens[DEFLATE_NUM_LITLEN_SYMS +
 				   DEFLATE_NUM_OFFSET_SYMS +
 				   DEFLATE_MAX_LENS_OVERRUN];
 
@@ -14429,7 +14429,7 @@ static const u32 offset_decode_results[DEFLATE_NUM_OFFSET_SYMS] = {
 
 static bool
 build_decode_table(u32 decode_table[],
-		   const len_t lens[],
+		   const libdeflate_len_t lens[],
 		   const unsigned num_syms,
 		   const u32 decode_results[],
 		   const unsigned table_bits,

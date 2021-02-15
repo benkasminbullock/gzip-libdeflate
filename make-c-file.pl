@@ -51,7 +51,7 @@ for my $file (@hfiles) {
 
 my $c = '';
 
-my $copyright = read_text ("$Bin/biggers");
+my $copyright = read_text ("$Bin/libd-copyr");
 $c .= "/*\n$copyright\n*/\n";
 
 my $saw_bitbuf_t;
@@ -93,18 +93,15 @@ for my $cfile (@cfiles) {
 
 while ($c =~ m!
     (
-	\#
-	\s*
-	include
-	\s*
-	[<"]
-	.*?
+	\#\s*include\s*[<"]
+	.*? # Allow for directory paths
 	(
 	    (?:common_defs
 	    |compiler_(?:gcc|msc)
 	    |lib_common
 	    |libdeflate
-	    |(?:arm|x86)-(cpu_features
+	    |(?:arm|x86)-
+		(cpu_features
 		|crc32_pclmul_template)
 	    |(?:x86|arm)/.*?
 	    |adler32_vec_template
@@ -128,6 +125,8 @@ while ($c =~ m!
     my $hfile = $2;
     $hfile =~ s!(x86|arm)/!$1-!;
     my $nohash = $include;
+    # Prevent the commented #include from matching the above big
+    # regex.
     $nohash =~ s!#!hashhashhash!;
     if ($includes{$hfile}) {
 	# lib/cpu_features_common.h has no include guard so we must
@@ -141,9 +140,16 @@ while ($c =~ m!
 	}
     }
     else {
-	print "$hfile not found.\n";
+	warn "$hfile not found";
     }
 }
+
+# Solaris doesn't like len_t:
+# http://www.cpantesters.org/cpan/report/14fb7626-6e2f-11eb-84bc-edd243e66a77
+
+$c =~ s!\blen_t\b!libdeflate_len_t!g;
+
+# Restore #
 
 $c =~ s!hashhashhash!#!g;
 
@@ -153,4 +159,3 @@ system ("cc -c $Bin/libdeflate.c");
 # Remove the o file, we are going to include the C file in our thing.
 unlink "$Bin/libdeflate.o" or die $!;
 exit;
-
