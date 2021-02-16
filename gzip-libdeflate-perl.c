@@ -15,6 +15,7 @@ typedef struct {
     struct libdeflate_decompressor * d;
     /* Debugging flag */
     unsigned int verbose : 1;
+    unsigned int init_ok : 1;
 }
 gzip_libdeflate_t;
 
@@ -30,6 +31,7 @@ gl_type_name[] = {
 
 #define N_TYPES (sizeof (gl_type_name)/sizeof (struct type2name))
 
+#define DEBUG
 #ifdef DEBUG
 #define MSG(format, args...)					\
     if (gl->verbose) {						\
@@ -55,12 +57,20 @@ gl_set_type (gzip_libdeflate_t * gl, int type)
 static void
 gl_set_level (gzip_libdeflate_t * gl, int level)
 {
-    if (level < 1 || level > 12) {
+    if (level < 0 || level > 12) {
 	warn ("Level out of bounds %d", level);
 	return;
     }
     MSG ("Setting level to %d", level);
     gl->level = level;
+}
+
+static void
+gl_check (gzip_libdeflate_t * gl)
+{
+    if (! gl->init_ok) {
+	croak ("%s:%d: BUG: Uninitialised gl", __FILE__, __LINE__);
+    }
 }
 
 static void
@@ -70,6 +80,8 @@ gl_set (gzip_libdeflate_t * gl, SV * key_sv, SV * value_sv)
     STRLEN keyl;
     const char * value;
     STRLEN valuel;
+
+    gl_check (gl);
     key = SvPV (key_sv, keyl);
     MSG ("Handling key %s", key);
     if (strcmp (key, "type") == 0) {
@@ -107,18 +119,9 @@ gl_set (gzip_libdeflate_t * gl, SV * key_sv, SV * value_sv)
 static void
 gl_init (gzip_libdeflate_t * gl)
 {
-    if (gl->t == 0) {
-	/* Default to gzip */
-	gl_set_type (gl, libdeflate_gzip);
-    }
-    /* The user did not specify a level in the creator. gl is
-       initialized with Newxz so level is zero initially. */
-    if (gl->level == 0) {
-	/* 6 is the default in libdeflate, libdeflate doesn't provide
-	   a macro so we have to use the magic number here. */
-	gl_set_level (gl, 6);
-    }
-    MSG ("Setting compression to level %d", gl->level);
+    gl->t = libdeflate_gzip;
+    gl->level = 6;
+    gl->init_ok = 1;
 }
 
 static SV *
@@ -143,6 +146,7 @@ gzip_libdeflate_compress (gzip_libdeflate_t * gl, SV * in_sv)
     SV * out;
     char * out_p;
 
+    gl_check (gl);
     if (! gl->c) {
 	gl->c = libdeflate_alloc_compressor (gl->level);
 	if (! gl->c) {
@@ -215,6 +219,7 @@ gzip_libdeflate_decompress (gzip_libdeflate_t * gl, SV * in_sv, SV * size)
     SV * out;
     char * out_p;
 
+    gl_check (gl);
     if (! gl->d) {
 	gl->d = libdeflate_alloc_decompressor ();
 	if (! gl->d) {

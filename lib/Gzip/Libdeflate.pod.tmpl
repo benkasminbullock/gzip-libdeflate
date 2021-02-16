@@ -21,7 +21,7 @@ This method was added in version [% version %] of the module.
 
 =head1 SYNOPSIS
 
-    use [% info.colon %];
+[% example("synopsis") %]
 
 =head1 VERSION
 
@@ -40,32 +40,6 @@ utilities. This distribution includes libdeflate within itself, so it
 is not necessary to have that on your system.
 
 =head1 METHODS
-
-=head2 new
-
-    my $gl = Gzip::Libdeflate->new (%options);
-
-=over
-
-=item level
-
-    my $gl = Gzip::Libdeflate->new (level => 9);
-
-An optional number argument of compression level from 1 (fast and poor
-compression) to 12 (slow and good compression).  If you do not specify
-it, the default is 6. These correspond to the compression levels of
-zlib, but with extra compression levels 10-12 also added. See L</About
-libdeflate> for details.
-
-=item type
-
-    my $gl = Gzip::Libdeflate->new (type => 'deflate');
-
-Change the type of compression. The default is type C<gzip> but you
-can also choose C<deflate> and C<zlib>. These are all the same thing
-up to headers.
-
-=back
 
 =head2 compress
 
@@ -87,12 +61,54 @@ specify the expected size of C<$thing>.
 In the C<gzip> format, the size is stored within the data itself, so
 it doesn't need to be specified.
 
+=head2 new
+
+    my $gl = Gzip::Libdeflate->new (%options);
+
+=over
+
+Possible options are
+
+=item level
+
+    my $gl = Gzip::Libdeflate->new (level => 9);
+
+A numerical argument of compression level from 1 (fast and poor
+compression) to 12 (slow and good compression).  If you do not specify
+it, the default is 6. These correspond to the compression levels of
+zlib, but with extra compression levels 10-12 also added. See L</About
+libdeflate> for details. 
+
+As with zlib, there is also a "zero compression" option of level 0
+which just puts the input into the gzip format without compressing it
+at all.
+
+=item type
+
+    my $gl = Gzip::Libdeflate->new (type => 'deflate');
+
+Change the type of compression. The default is type C<gzip> but you
+can also choose C<deflate> and C<zlib>. These are all the same thing
+up to headers.
+
+=back
+
 =head1 SEE ALSO
 
 =head2 About libdeflate
 
-Libdeflate is an updated version of C<zlib>. See the L<Libdeflate
-github repository|https://github.com/ebiggers/libdeflate> for
+Libdeflate is a new library which offers the same form of deflate
+compression as offered by C<zlib>. From its README:
+
+=over
+
+libdeflate is a library for fast, whole-buffer DEFLATE-based
+compression and decompression.
+
+=back
+
+See the L<Libdeflate github
+repository|https://github.com/ebiggers/libdeflate> for full
 information.
 
 =head2 CPAN modules

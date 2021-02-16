@@ -153,9 +153,9 @@ $c =~ s!\blen_t\b!libdeflate_len_t!g;
 
 $c =~ s!hashhashhash!#!g;
 
-write_text ("$Bin/libdeflate.c", $c);
+write_text ("$Bin/libdeflate-one.c", $c);
 # Test compilation
-system ("cc -c $Bin/libdeflate.c");
+system ("cc -c $Bin/libdeflate-one.c");
 # Remove the o file, we are going to include the C file in our thing.
-unlink "$Bin/libdeflate.o" or die $!;
+unlink "$Bin/libdeflate-one.o" or die $!;
 exit;

@@ -9,7 +9,7 @@
 #undef MAX
 #undef ALIGN
 
-#include "libdeflate.c"
+#include "libdeflate-one.c"
 #include "gzip-libdeflate-perl.c"
 
 typedef gzip_libdeflate_t * Gzip__Libdeflate;
@@ -71,4 +71,5 @@ CODE:
 		libdeflate_free_decompressor (gl->d);
 		gl->d = 0;
 	}
+	Safefree (gl);
 
