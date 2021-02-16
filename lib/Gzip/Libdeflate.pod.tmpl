@@ -46,14 +46,14 @@ is not necessary to have that on your system.
     my $comp_thing = $gl->compress ($thing);
 
 Compress input C<$thing> using whatever compression level and type you
-have specified for C<$gl> in L</compressor>.
+have specified for C<$gl> in L</new>.
 
 =head2 decompress
 
     my $thing = $gl->decompress ($dthing);
 
 Decompress C<$comp_thing> into C<$thing>. If you have chosen the
-C<zlib> or C<deflate> options in L</decompressor>, you also need to
+C<zlib> or C<deflate> options in L</new>, you also need to
 specify the expected size of C<$thing>.
 
     my $thing = $gl->decompress ($dthing, 1000);
@@ -65,9 +65,9 @@ it doesn't need to be specified.
 
     my $gl = Gzip::Libdeflate->new (%options);
 
-=over
-
 Possible options are
+
+=over
 
 =item level
 
