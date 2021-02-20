@@ -9,6 +9,13 @@
 #undef MAX
 #undef ALIGN
 
+/* https://www.perlmonks.org/?node_id=11128586 */
+
+#ifdef WIN32
+#undef malloc
+#undef free
+#endif
+
 #include "libdeflate-one.c"
 #include "gzip-libdeflate-perl.c"
 

@@ -10,8 +10,8 @@ use FindBin '$Bin';
 use File::Slurper qw!read_text write_text!;
 use Deploy 'make_date';
 
-my $newversion = '0.01';
-my $version = '0.00_04';
+my $version = '0.01';
+my $newversion = '0.01_01';
 
 my @pmfiles = qw!
     lib/Gzip/Libdeflate.pm
