@@ -1,4 +1,7 @@
 #!/home/ben/software/install/bin/perl
+
+# Make the single C file from the files
+
 use warnings;
 use strict;
 use utf8;
@@ -6,9 +9,10 @@ use FindBin '$Bin';
 use File::Slurper qw!read_text write_text!;
 use C::Tokenize ':all';
 
-my $verbose = 1;
+#my $verbose = 1;
+my $verbose;
 
-my $dir = "$Bin/../../software/libdeflate-1.7";
+my $dir = "$Bin/../../software/libdeflate/libdeflate-1.14";
 if (! -d $dir) {
     die "No $dir";
 }
@@ -35,6 +39,9 @@ for (@arm) {
 push @hfiles, @arm;
 my %includes;
 for my $file (@hfiles) {
+    if ($verbose) {
+	print "$file\n";
+    }
     my $bfile = $file;
     my $hfile = $file;
     $bfile =~ s!.*/!!;
@@ -47,6 +54,9 @@ for my $file (@hfiles) {
     }
     $text =~ s!$comment_re!!g;
     $includes{$bfile} = $text;
+}
+if ($verbose) {
+    print "Done files.\n";
 }
 
 my $c = '';
@@ -107,11 +117,14 @@ while ($c =~ m!
 	    |adler32_vec_template
 	    |crc32_vec_template
 	    |crc32_table
+	    |crc32_tables
+	    |crc32_multipliers
 	    |deflate_compress
 	    |deflate_constants
 	    |unaligned
 	    |hc_matchfinder
 	    |bt_matchfinder
+	    |ht_matchfinder
 	    |matchfinder_common
 	    |decompress_template
 	    |gzip_constants
