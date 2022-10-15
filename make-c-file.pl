@@ -8,9 +8,17 @@ use utf8;
 use FindBin '$Bin';
 use File::Slurper qw!read_text write_text!;
 use C::Tokenize ':all';
+use JSON::Create ':all';
+use File::Copy 'copy';
+
+# Turn on or off debugging messages.
 
 #my $verbose = 1;
 my $verbose;
+
+# Version of the library
+
+my %version;
 
 my $dir = "$Bin/../../software/libdeflate/libdeflate-1.14";
 if (! -d $dir) {
@@ -47,6 +55,12 @@ for my $file (@hfiles) {
     $bfile =~ s!.*/!!;
     $hfile =~ s!(x86|arm)-!$1/!g;
     my $text = read_text ($hfile);
+    if ($text =~ m!#define\s+(LIBDEFLATE_VERSION_STRING)\s+"(.*?)"!) {
+	if ($verbose) {
+	    print "Found $1 '$2' in $hfile\n";
+	}
+	$version{$1} = $2;
+    }
     if ($hfile =~ m!(arm|x86)!) {
 	my $type = $1;
      	$text =~ s!#\s*include\s*"(.*?)"!#include "$type-$1"!g;
@@ -58,6 +72,12 @@ for my $file (@hfiles) {
 if ($verbose) {
     print "Done files.\n";
 }
+
+# Copy the copyright of libdeflate into this directory
+
+copy ("$dir/COPYING", "$Bin/libd-copyr") or die $!;
+
+# The text contents of the output file.
 
 my $c = '';
 
@@ -112,7 +132,9 @@ while ($c =~ m!
 	    |libdeflate
 	    |(?:arm|x86)-
 		(cpu_features
-		|crc32_pclmul_template)
+		|crc32_pclmul_template
+		    # http://www.cpantesters.org/cpan/report/239faa2c-49ba-11ed-afcc-a473647750dd
+		|arm-crc32_pmull_helpers)
 	    |(?:x86|arm)/.*?
 	    |adler32_vec_template
 	    |crc32_vec_template
@@ -171,4 +193,10 @@ write_text ("$Bin/libdeflate-one.c", $c);
 system ("cc -c $Bin/libdeflate-one.c");
 # Remove the o file, we are going to include the C file in our thing.
 unlink "$Bin/libdeflate-one.o" or die $!;
+
+if (! keys %version) {
+    die "No version information was found";
+}
+write_json ("$Bin/version.json", \%version);
+
 exit;

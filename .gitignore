@@ -18,3 +18,5 @@ lib/Gzip/Libdeflate.pod
 MANIFEST
 README
 examples/*-out.txt
+version.json
+libd-copyr

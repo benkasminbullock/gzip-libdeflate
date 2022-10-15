@@ -7,6 +7,8 @@ use Perl::Build qw/get_info get_commit/;
 use Perl::Build::Pod ':all';
 use Deploy qw/do_system older/;
 use Getopt::Long;
+use JSON::Parse ':all';
+
 my $ok = GetOptions (
     'force' => \my $force,
     'verbose' => \my $verbose,
@@ -26,14 +28,16 @@ my $commit = get_commit (%pbv);
 my $pod = 'Libdeflate.pod';
 my $input = "$Bin/lib/Gzip/$pod.tmpl";
 my $output = "$Bin/lib/Gzip/$pod";
+# version.json is written by make-c-file.pl on the basis of the header
+# file where the version string is defined.
+my $version = read_json ("$Bin/version.json");
 
 # Template toolkit variable holder
 
 my %vars = (
     info => $info,
     commit => $commit,
-    # Get this from a config file
-    libdeflate_version => '1.7',
+    libdeflate_version => $version->{LIBDEFLATE_VERSION_STRING},
 );
 
 my $tt = Template->new (

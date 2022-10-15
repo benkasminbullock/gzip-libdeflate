@@ -6,5 +6,6 @@ use Perl::Build;
 perl_build (
     pre => "$Bin/make-c-file.pl",
     make_pod => "$Bin/make-pod.pl",
+    clean => "$Bin/clean.pl",
 );
 exit;
