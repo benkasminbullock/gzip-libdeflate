@@ -20,3 +20,5 @@ README
 examples/*-out.txt
 version.json
 libd-copyr
+libdeflate-one.c
+

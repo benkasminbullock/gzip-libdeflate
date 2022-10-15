@@ -1,4 +1,12 @@
 #!/home/ben/software/install/bin/perl
 use Z;
-unlink "$Bin/version.json" or die $!;
-unlink "$Bin/libdeflate-one.c" or die $!;
+my @files = qw!
+    version.json
+    libdeflate-one.c
+    libd-copyr
+!;
+for my $file (@files) {
+    if (-f $file) {
+	unlink "$Bin/$file" or die $!;
+    }
+}
