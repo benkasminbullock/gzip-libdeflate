@@ -134,7 +134,7 @@ while ($c =~ m!
 		(cpu_features
 		|crc32_pclmul_template
 		    # http://www.cpantesters.org/cpan/report/239faa2c-49ba-11ed-afcc-a473647750dd
-		|arm-crc32_pmull_helpers)
+		|crc32_pmull_helpers)
 	    |(?:x86|arm)/.*?
 	    |adler32_vec_template
 	    |crc32_vec_template
