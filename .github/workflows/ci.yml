@@ -31,6 +31,8 @@ jobs:
     - name: Install Modules
       run: |
         cpanm -v
+        cpanm Perl::Build
+        perl make-pod.pl
         cpanm --installdeps --notest .
 
     - name: Run tests
