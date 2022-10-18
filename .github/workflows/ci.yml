@@ -31,6 +31,8 @@ jobs:
     - name: Install Modules
       run: |
         cpanm -v
+        cpanm Devel::PPPort
+        perl -MDevel::PPPort -e'Devel::PPPort::WriteFile'
         cpanm --installdeps --notest .
 
     - name: Run tests
