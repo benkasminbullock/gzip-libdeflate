@@ -1,6 +1,6 @@
 Revision history for Perl module Gzip::Libdeflate
 
-0.04_02 2022-10-17
+0.04_03 2023-05-07
 
 - Header file problems with Arm system
 
@@ -12,7 +12,7 @@ Revision history for Perl module Gzip::Libdeflate
 
 - Add convenience functions compress_file and decompress_file
 
-0.02 2021-02-21
+0.02_01 2023-05-07
 
 - Work around issue with malloc/free on Windows (Strawberry Perl)
 

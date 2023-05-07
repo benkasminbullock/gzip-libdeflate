@@ -1,7 +1,7 @@
 package Gzip::Libdeflate;
 use warnings;
 use strict;
-our $VERSION = '0.04_02';
+our $VERSION = '0.04_03';
 require XSLoader;
 XSLoader::load ('Gzip::Libdeflate', $VERSION);
 
