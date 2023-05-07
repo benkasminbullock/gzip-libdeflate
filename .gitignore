@@ -16,14 +16,10 @@ META.*
 ppport.h
 MANIFEST
 #
-# These files are generated, but cannot be recreated without the use
-# of special modules, so these entries are commented out to allow
-# people who don't have the modules to edit the git repository.
-# 
-# README
-# examples/*-out.txt
-# version.json
-# lib/Gzip/Libdeflate.pod
-# libd-copyr
-# libdeflate-one.c
+README
+examples/*-out.txt
+version.json
+lib/Gzip/Libdeflate.pod
+libd-copyr
+libdeflate-one.c
 
