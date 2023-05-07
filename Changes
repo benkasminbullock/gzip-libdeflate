@@ -1,8 +1,8 @@
 Revision history for Perl module Gzip::Libdeflate
 
-0.04_03 2023-05-07
+0.05 2023-05-08
 
-- Header file problems with Arm system
+- Update libdeflate to 1.18
 
 0.04 2022-10-13
 
