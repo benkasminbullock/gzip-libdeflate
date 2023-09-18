@@ -20,7 +20,7 @@ my $verbose;
 
 my %version;
 
-my $dir = "$Bin/../../software/libdeflate/libdeflate-1.18";
+my $dir = "$Bin/../../software/libdeflate/libdeflate-1.19";
 if (! -d $dir) {
     die "No $dir";
 }
