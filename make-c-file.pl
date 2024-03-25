@@ -10,17 +10,25 @@ use File::Slurper qw!read_text write_text!;
 use C::Tokenize ':all';
 use JSON::Create ':all';
 use File::Copy 'copy';
+use Getopt::Long;
 
 # Turn on or off debugging messages.
 
-#my $verbose = 1;
-my $verbose;
+my $ok = GetOptions (
+    verbose => \my $verbose,
+);
+if (! $ok) {
+    print <<EOF;
+--verbose - debugging messages
+EOF
+    exit;
+}
 
 # Version of the library
 
 my %version;
 
-my $dir = "$Bin/../../software/libdeflate/libdeflate-1.19";
+my $dir = "$Bin/../../software/libdeflate/libdeflate-1.20";
 if (! -d $dir) {
     die "No $dir";
 }
@@ -47,12 +55,12 @@ for (@arm) {
 push @hfiles, @arm;
 my %includes;
 for my $file (@hfiles) {
-    if ($verbose) {
-	print "$file\n";
-    }
     my $bfile = $file;
     my $hfile = $file;
     $bfile =~ s!.*/!!;
+    if ($verbose) {
+	print "Processing header file '$bfile':\n";
+    }
     $hfile =~ s!(x86|arm)-!$1/!g;
     my $text = read_text ($hfile);
     if ($text =~ m!#define\s+(LIBDEFLATE_VERSION_STRING)\s+"(.*?)"!) {
@@ -134,7 +142,9 @@ while ($c =~ m!
 		(cpu_features
 		|crc32_pclmul_template
 		    # http://www.cpantesters.org/cpan/report/239faa2c-49ba-11ed-afcc-a473647750dd
-		|crc32_pmull_helpers)
+		|crc32_pmull_helpers
+		|adler32_template
+		)
 	    |(?:x86|arm)/.*?
 	    |adler32_vec_template
 	    |crc32_vec_template
