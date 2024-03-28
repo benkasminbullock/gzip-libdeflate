@@ -143,6 +143,7 @@ while ($c =~ m!
 		|crc32_pclmul_template
 		    # http://www.cpantesters.org/cpan/report/239faa2c-49ba-11ed-afcc-a473647750dd
 		|crc32_pmull_helpers
+		|crc32_pmull_wide
 		|adler32_template
 		)
 	    |(?:x86|arm)/.*?
