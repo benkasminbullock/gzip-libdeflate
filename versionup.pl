@@ -10,8 +10,8 @@ use FindBin '$Bin';
 use File::Slurper qw!read_text write_text!;
 use Deploy 'make_date';
 
-my $version = '0.07_02';
-my $newversion = '0.08';
+my $newversion = '0.08_01';
+my $version = '0.08';
 
 my @pmfiles = qw!
     lib/Gzip/Libdeflate.pm
@@ -30,16 +30,6 @@ for my $file (@pmfiles) {
     else {
 	warn "$file failed";
     }
-}
-
-my $date = make_date ('-');
-my $changes = "$Bin/Changes";
-my $text = read_text ($changes);
-if ($text =~ s/(\Q$version\E|\Q$newversion\E) ([0-9-]+)/$newversion $date/) {
-    write_text ($changes, $text);
-}
-else {
-    warn "$changes failed";
 }
 
 

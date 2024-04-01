@@ -1,5 +1,9 @@
 Revision history for Perl module Gzip::Libdeflate
 
+0.08_01 2024-04-01
+
+- Try to do something about version mistakes
+
 0.08 2024-03-30
 
 - Check compiler when installing and exit if version is too low
