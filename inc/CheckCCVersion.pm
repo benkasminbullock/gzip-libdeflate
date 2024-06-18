@@ -32,6 +32,7 @@ sub check_cc_version
     }
     # Need to add tests for MSVC compiler here to check it is 2015 or
     # later, according to Biggers' README page.
+    warn "Your compiler, $version, may be incompatible with libdeflate";
 }
 
 sub compiler
