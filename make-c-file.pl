@@ -28,7 +28,7 @@ EOF
 
 my %version;
 
-my $dir = "$Bin/../../software/libdeflate/libdeflate-1.20";
+my $dir = "$Bin/../../software/libdeflate/libdeflate-1.21";
 if (! -d $dir) {
     die "No $dir";
 }
